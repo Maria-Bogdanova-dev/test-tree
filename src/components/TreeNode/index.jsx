@@ -24,7 +24,7 @@ export default function TreeNode({
   return (
     <li>
       <div className={style.box}>
-        <button className={style.btn} type="button" onClick={handleClick}>
+        <button className={style.smallBox} type="button" onClick={handleClick}>
           {!isOpen && notEmpty && (
             <img className={style.arrow} src={downArrow} alt="стрелка" />
           )}
@@ -36,7 +36,7 @@ export default function TreeNode({
         </button>
 
         {focusItem === id && (
-          <div className={style.backColor}>
+          <div className={style.boxOpports}>
             <button>
               <img className={style.opports} src={add} alt="add" />
             </button>
