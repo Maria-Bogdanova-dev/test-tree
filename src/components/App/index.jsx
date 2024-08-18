@@ -1,10 +1,11 @@
 import { useEffect, useState } from "react";
 import TreeNode from "../TreeNode";
-import "./App.css";
+import styles from "../../commonStyles.module.css";
 
 function App() {
   const [tree, setTree] = useState({});
   const [focusItem, setFocusItem] = useState("");
+
   useEffect(() => {
     (async function () {
       let res = await fetch(
@@ -12,15 +13,13 @@ function App() {
       );
       res = await res.json();
       setTree(res);
-      console.log(111, res);
     })();
   }, []);
-  // console.log(222, focusItem);
 
   return (
     <>
       {tree.name && (
-        <ul>
+        <ul className={styles.treeList}>
           <TreeNode
             node={tree}
             focusItem={focusItem}
