@@ -6,35 +6,35 @@ import { apiPaths } from "../constants";
 const useApi = () => {
   const { setTree, setError } = useContext(TreeContext);
 
-  const fetchData = useCallback(async (path) => {
-    const controller = new AbortController();
-    const signal = controller.signal;
-    const config = {
-      method: "POST",
-      url: path,
-      signal,
-    };
-
-    try {
-      const response = await axios(config);
-
-      return {
-        data: response.data !== undefined ? response.data : null,
-        cancelRequest: () => controller.abort(),
+  const fetchData = useCallback(
+    async (path) => {
+      const controller = new AbortController();
+      const signal = controller.signal;
+      const config = {
+        method: "POST",
+        url: path,
+        signal,
       };
-    } catch (error) {
-      console.error(`Fetch Data error: ${error.message}`);
-      setError(error.message);
-    }
 
-    return { data: null, cancelRequest: () => {} };
-  }, []);
+      try {
+        const response = await axios(config);
+
+        return {
+          data: response.data !== undefined ? response.data : null,
+          cancelRequest: () => controller.abort(),
+        };
+      } catch (error) {
+        console.error(`Fetch Data error: ${error.message}`);
+        setError(error.message);
+      }
+
+      return { data: null, cancelRequest: () => {} };
+    },
+    [setError]
+  );
 
   const getItems = useCallback(async () => {
-    const { data, cancelRequest } = await fetchData(
-      apiPaths.getItems,
-      setError
-    );
+    const { data, cancelRequest } = await fetchData(apiPaths.getItems);
     setTree(data || {});
     return cancelRequest;
   }, [fetchData, setError, setTree]);

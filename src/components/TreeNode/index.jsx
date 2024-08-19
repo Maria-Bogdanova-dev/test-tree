@@ -66,6 +66,7 @@ export default function TreeNode({
                 typeOfModal={typeOfModal}
                 nodeName={name}
                 nodeId={id}
+                setTypeOfModal={setTypeOfModal}
               />
             )}
           </>

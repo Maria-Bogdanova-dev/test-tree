@@ -18,6 +18,13 @@ const theme = createTheme({
       styleOverrides: {
         paper: {
           width: "532px",
+          "@media (max-width: 770px)": {
+            width: "100vw",
+            height: "100vh",
+            margin: 0,
+            maxWidth: "100vw",
+            maxHeight: "100vh",
+          },
         },
       },
     },
@@ -67,6 +74,9 @@ const theme = createTheme({
           minWidth: "90px",
           fontSize: "14px",
           height: "40px",
+          "@media (max-width: 770px)": {
+            width: "100%",
+          },
         },
       },
     },

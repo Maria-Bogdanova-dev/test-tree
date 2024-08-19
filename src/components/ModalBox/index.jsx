@@ -21,6 +21,7 @@ export default function ModalBox({
   setModal,
   nodeName,
   nodeId,
+  setTypeOfModal,
 }) {
   const { setError } = useContext(TreeContext);
   const { addItem, updateItem, deleteItem } = useApi();
@@ -70,7 +71,15 @@ export default function ModalBox({
         cancelRequestPromise();
       }
     };
-  }, [action, functionsMap, nodeId, params, setError]);
+  }, [
+    action,
+    functionsMap,
+    nodeId,
+    params,
+    setError,
+    setModal,
+    setTypeOfModal,
+  ]);
 
   return (
     <ThemeProvider theme={theme}>
