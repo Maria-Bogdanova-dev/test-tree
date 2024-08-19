@@ -29,7 +29,6 @@ export default function TreeNode({
     setTypeOfModal(action);
     setModal(true);
   }
-  console.log(111, modal);
 
   return (
     <li className={styles.treeLi}>
