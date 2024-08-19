@@ -1,16 +1,23 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, useContext } from "react";
 import TreeNode from "../TreeNode";
 import useApi from "../../Hooks/UseApi";
 import styles from "../../commonStyles.module.css";
+import TreeContext from "../../contexts/tree-contexts";
 
 function Tree() {
   const [focusItem, setFocusItem] = useState("");
-  const { tree, getItems } = useApi();
-
+  const { getItems } = useApi();
+  const { tree, setError } = useContext(TreeContext);
   useEffect(() => {
     const fetchData = async () => {
-      const cancelRequest = await getItems();
-      return cancelRequest;
+      try {
+        const cancelRequest = await getItems();
+        return cancelRequest;
+      } catch (error) {
+        if (typeof setError === "function") {
+          setError(error.message);
+        }
+      }
     };
 
     const cancelRequestPromise = fetchData();
@@ -20,11 +27,10 @@ function Tree() {
         cancelRequestPromise();
       }
     };
-  }, [getItems]);
-  console.log(111, tree);
+  }, [getItems, setError]);
 
   return (
-    <>
+    <div>
       {tree.name && (
         <ul className={styles.treeList}>
           <TreeNode
@@ -34,7 +40,7 @@ function Tree() {
           />
         </ul>
       )}
-    </>
+    </div>
   );
 }
 

@@ -1,7 +1,7 @@
 /* eslint-disable react/prop-types */
-import { useEffect, useState, useMemo } from "react";
+import { useEffect, useState, useMemo, useContext } from "react";
 import Modal from "../Modal";
-
+import TreeContext from "../../contexts/tree-contexts";
 import useApi from "../../Hooks/UseApi.js";
 import { addAction, renameAction, deleteAction } from "../../constants";
 import DialogTitle from "@mui/material/DialogTitle";
@@ -22,8 +22,8 @@ export default function ModalBox({
   nodeName,
   nodeId,
 }) {
-  const { tree, addItem, updateItem, deleteItem, setError } = useApi();
-
+  const { setError } = useContext(TreeContext);
+  const { addItem, updateItem, deleteItem } = useApi();
   const [item, setItem] = useState(typeOfModal === addAction ? "" : nodeName);
   const [action, setAction] = useState(null);
   const functionsMap = useMemo(
@@ -41,7 +41,7 @@ export default function ModalBox({
       case addAction:
         return { parentNodeId: nodeId, nodeName: item };
       case renameAction:
-        return { id: nodeId, newName: item };
+        return { id: nodeId, newNodeName: item };
       case deleteAction:
         return { id: nodeId };
       default:
@@ -55,6 +55,7 @@ export default function ModalBox({
     async function fetchData(actionFn, params) {
       try {
         const cancelRequest = await actionFn(params);
+        setModal(false);
         return cancelRequest;
       } catch (error) {
         console.error("Error during action execution:", error);
@@ -69,8 +70,7 @@ export default function ModalBox({
         cancelRequestPromise();
       }
     };
-  }, [action, functionsMap, nodeId, params]);
-  console.log(222, tree);
+  }, [action, functionsMap, nodeId, params, setError]);
 
   return (
     <ThemeProvider theme={theme}>

@@ -1,10 +1,10 @@
-import { useState, useCallback } from "react";
+import { useCallback, useContext } from "react";
 import axios from "axios";
+import TreeContext from "../contexts/tree-contexts";
 import { apiPaths } from "../constants";
 
 const useApi = () => {
-  const [tree, setTree] = useState({});
-  const [error, setError] = useState(null);
+  const { setTree, setError } = useContext(TreeContext);
 
   const fetchData = useCallback(async (path) => {
     const controller = new AbortController();
@@ -23,25 +23,21 @@ const useApi = () => {
         cancelRequest: () => controller.abort(),
       };
     } catch (error) {
-      if (error.name === "CanceledError") {
-        console.log("Request canceled");
-      } else {
-        console.error(
-          `Fetch Data error! Status: ${error.response?.status || "Unknown"}`,
-          error.message
-        );
-        setError(error.message);
-      }
-
-      return { data: null, cancelRequest: () => {} };
+      console.error(`Fetch Data error: ${error.message}`);
+      setError(error.message);
     }
+
+    return { data: null, cancelRequest: () => {} };
   }, []);
 
   const getItems = useCallback(async () => {
-    const { data, cancelRequest } = await fetchData(apiPaths.getItems);
+    const { data, cancelRequest } = await fetchData(
+      apiPaths.getItems,
+      setError
+    );
     setTree(data || {});
     return cancelRequest;
-  }, [fetchData]);
+  }, [fetchData, setError, setTree]);
 
   // ---------------------------------------------------------
   // добавить
@@ -56,7 +52,7 @@ const useApi = () => {
       setError(null);
       return cancelRequest;
     },
-    [fetchData]
+    [fetchData, setError, setTree]
   );
 
   // ======================================================
@@ -96,12 +92,11 @@ const useApi = () => {
       setError(null);
       return cancelRequest;
     },
-    [fetchData, updateNodeRecursive]
+    [fetchData, updateNodeRecursive, setError, setTree]
   );
   // ======================================================================
   // удаление
   const deleteNodeRecursive = useCallback((nodes, itemId) => {
-    console.log(999, nodes, itemId);
     return nodes
       .map((node) => {
         if (node.children) {
@@ -118,7 +113,6 @@ const useApi = () => {
   const deleteItem = useCallback(
     async (params) => {
       const { id } = params;
-      console.log(888, tree);
 
       const { cancelRequest } = await fetchData(apiPaths.deleteItem(id));
       setTree((prevTree) => ({
@@ -128,20 +122,17 @@ const useApi = () => {
       setError(null);
       return cancelRequest;
     },
-    [fetchData, deleteNodeRecursive]
+    [fetchData, deleteNodeRecursive, setError, setTree]
   );
 
   // -------------------------------------------------------------------------
   // возврат значений
   return {
-    tree,
     getItems,
     fetchData,
     addItem,
     updateItem,
     deleteItem,
-    error,
-    setError,
   };
 };
 
