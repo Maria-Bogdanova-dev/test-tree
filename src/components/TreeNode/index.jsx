@@ -1,5 +1,5 @@
 /* eslint-disable react/prop-types */
-import { useState } from "react";
+import { useState, useContext } from "react";
 
 import ModalBox from "../ModalBox";
 
@@ -9,6 +9,7 @@ import downArrow from "../../assets/icons/downArrow.png";
 import styles from "./TreeNode.module.css";
 import cStyles from "../../commonStyles.module.css";
 import IconButton from "../IconButtons";
+import TreeContext from "../../contexts/tree-contexts";
 
 export default function TreeNode({
   node: { name, children, id },
@@ -16,10 +17,9 @@ export default function TreeNode({
   setFocusItem,
 }) {
   const [isOpen, setIsOpen] = useState(false);
-  const [modal, setModal] = useState(false);
   const [typeOfModal, setTypeOfModal] = useState("");
   const notEmpty = children.length > 0;
-
+  const { modal, setModal } = useContext(TreeContext);
   function handleOpenItem() {
     setIsOpen(!isOpen);
     setFocusItem(id);
@@ -29,6 +29,7 @@ export default function TreeNode({
     setTypeOfModal(action);
     setModal(true);
   }
+  console.log(111, modal);
 
   return (
     <li className={styles.treeLi}>

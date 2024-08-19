@@ -4,7 +4,7 @@ import TreeContext from "../contexts/tree-contexts";
 import { apiPaths } from "../constants";
 
 const useApi = () => {
-  const { setTree, setError } = useContext(TreeContext);
+  const { setTree, setError, setModal } = useContext(TreeContext);
 
   const fetchData = useCallback(
     async (path) => {
@@ -26,28 +26,28 @@ const useApi = () => {
       } catch (error) {
         console.error(`Fetch Data error: ${error.message}`);
         setError(error.message);
+        setModal(true);
       }
 
       return { data: null, cancelRequest: () => {} };
     },
-    [setError]
+    [setError, setModal]
   );
 
   const getItems = useCallback(async () => {
     const { data, cancelRequest } = await fetchData(apiPaths.getItems);
     setTree(data || {});
+    setError(null);
     return cancelRequest;
   }, [fetchData, setError, setTree]);
 
-  // ---------------------------------------------------------
-  // добавить
-
+  // add
   const addItem = useCallback(
     async (params) => {
       const { parentNodeId, nodeName } = params;
       await fetchData(apiPaths.addItem(parentNodeId, nodeName));
-      const { data, cancelRequest } = await fetchData(apiPaths.getItems);
 
+      const { data, cancelRequest } = await fetchData(apiPaths.getItems);
       setTree(data);
       setError(null);
       return cancelRequest;
@@ -55,9 +55,7 @@ const useApi = () => {
     [fetchData, setError, setTree]
   );
 
-  // ======================================================
-  // апдейт
-
+  // rename
   const updateNodeRecursive = useCallback((nodes, updatedNode) => {
     return nodes.map((node) => {
       if (node.id === updatedNode.id) {
@@ -94,8 +92,8 @@ const useApi = () => {
     },
     [fetchData, updateNodeRecursive, setError, setTree]
   );
-  // ======================================================================
-  // удаление
+
+  // delete
   const deleteNodeRecursive = useCallback((nodes, itemId) => {
     return nodes
       .map((node) => {
@@ -113,8 +111,8 @@ const useApi = () => {
   const deleteItem = useCallback(
     async (params) => {
       const { id } = params;
-
       const { cancelRequest } = await fetchData(apiPaths.deleteItem(id));
+
       setTree((prevTree) => ({
         ...prevTree,
         children: deleteNodeRecursive(prevTree.children, id),
@@ -125,8 +123,6 @@ const useApi = () => {
     [fetchData, deleteNodeRecursive, setError, setTree]
   );
 
-  // -------------------------------------------------------------------------
-  // возврат значений
   return {
     getItems,
     fetchData,

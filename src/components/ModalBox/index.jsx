@@ -14,7 +14,7 @@ import Divider from "@mui/material/Divider";
 
 import { ThemeProvider } from "@mui/material/styles";
 import theme from "./theme.js";
-
+import { fetchData } from "../../utils/apiUtils";
 export default function ModalBox({
   open,
   typeOfModal,
@@ -53,18 +53,12 @@ export default function ModalBox({
   useEffect(() => {
     if (!action) return;
 
-    async function fetchData(actionFn, params) {
-      try {
-        const cancelRequest = await actionFn(params);
-        setModal(false);
-        return cancelRequest;
-      } catch (error) {
-        console.error("Error during action execution:", error);
-        setError(error.message || "An error occurred");
-      }
-    }
-
-    const cancelRequestPromise = fetchData(functionsMap.get(action), params);
+    const cancelRequestPromise = fetchData(
+      setModal,
+      setError,
+      functionsMap.get(action),
+      params
+    );
 
     return () => {
       if (typeof cancelRequestPromise === "function") {

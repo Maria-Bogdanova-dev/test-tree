@@ -3,31 +3,21 @@ import TreeNode from "../TreeNode";
 import useApi from "../../Hooks/UseApi";
 import styles from "../../commonStyles.module.css";
 import TreeContext from "../../contexts/tree-contexts";
+import { fetchData } from "../../utils/apiUtils";
 
 function Tree() {
   const [focusItem, setFocusItem] = useState("");
   const { getItems } = useApi();
-  const { tree, setError } = useContext(TreeContext);
+  const { tree, setError, setModal } = useContext(TreeContext);
+
   useEffect(() => {
-    const fetchData = async () => {
-      try {
-        const cancelRequest = await getItems();
-        return cancelRequest;
-      } catch (error) {
-        if (typeof setError === "function") {
-          setError(error.message);
-        }
-      }
-    };
-
-    const cancelRequestPromise = fetchData();
-
+    const cancelRequestPromise = fetchData(setModal, setError, getItems);
     return () => {
       if (typeof cancelRequestPromise === "function") {
         cancelRequestPromise();
       }
     };
-  }, [getItems, setError]);
+  }, [getItems, setError, setModal]);
 
   return (
     <div>
