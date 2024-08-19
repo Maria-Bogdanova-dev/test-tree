@@ -1,31 +1,18 @@
 .treeLi {
   text-align: start;
 }
-.treeButton {
-  border: none;
-  background-color: inherit;
-  padding: 0;
-}
+
 .arrow {
   width: 10px;
   padding: 5px;
 }
-.opports {
-  width: 20px;
-  transform: translateY(2px);
-  margin: 0 5px;
-}
+
 .box {
   display: flex;
   height: 24px;
 }
 .smallBox {
   display: flex;
-}
-
-.boxOpports {
-  background-color: #eeeff8;
-  width: 100%;
 }
 
 .nameBackground {

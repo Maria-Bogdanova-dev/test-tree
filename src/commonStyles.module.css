@@ -8,3 +8,8 @@
 .treeList .treeList {
   margin-left: 20px;
 }
+.treeButton {
+  border: none;
+  background-color: inherit;
+  padding: 0;
+}

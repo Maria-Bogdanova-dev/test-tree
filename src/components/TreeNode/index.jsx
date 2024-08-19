@@ -3,14 +3,12 @@ import { useState } from "react";
 
 import ModalBox from "../ModalBox";
 
-import rightArrow from "./rightArrow.png";
-import downArrow from "./downArrow.png";
-import remove from "./remove.png";
-import add from "./add.png";
-import update from "./update.png";
+import rightArrow from "../../assets/icons/rightArrow.png";
+import downArrow from "../../assets/icons/downArrow.png";
 
 import styles from "./TreeNode.module.css";
 import cStyles from "../../commonStyles.module.css";
+import IconButton from "../IconButtons";
 
 export default function TreeNode({
   node: { name, children, id },
@@ -19,7 +17,7 @@ export default function TreeNode({
 }) {
   const [isOpen, setIsOpen] = useState(false);
   const [modal, setModal] = useState(false);
-  const [kindModal, setKindModal] = useState("");
+  const [typeOfModal, setTypeOfModal] = useState("");
   const notEmpty = children.length > 0;
 
   function handleOpenItem() {
@@ -28,7 +26,7 @@ export default function TreeNode({
   }
 
   function handleOpenModal(action) {
-    setKindModal(action);
+    setTypeOfModal(action);
     setModal(true);
   }
 
@@ -36,15 +34,15 @@ export default function TreeNode({
     <li className={styles.treeLi}>
       <div className={styles.box}>
         <button
-          className={`${styles.treeButton} ${styles.smallBox}`}
+          className={`${cStyles.treeButton} ${styles.smallBox}`}
           type="button"
           onClick={handleOpenItem}
         >
           {!isOpen && notEmpty && (
-            <img className={styles.arrow} src={downArrow} alt="стрелка" />
+            <img className={styles.arrow} src={downArrow} alt="closeList" />
           )}
           {isOpen && notEmpty && (
-            <img className={styles.arrow} src={rightArrow} alt="стрелка" />
+            <img className={styles.arrow} src={rightArrow} alt="openList" />
           )}
 
           <span
@@ -59,30 +57,18 @@ export default function TreeNode({
         </button>
 
         {focusItem === id && (
-          <div className={styles.boxOpports}>
-            <button
-              className={styles.treeButton}
-              type="button"
-              onClick={() => handleOpenModal("Add")}
-            >
-              <img className={styles.opports} src={add} alt="add" />
-            </button>
-            <button
-              className={styles.treeButton}
-              type="button"
-              onClick={() => handleOpenModal("Rename")}
-            >
-              <img className={styles.opports} src={update} alt="update" />
-            </button>
-            <button
-              className={styles.treeButton}
-              type="button"
-              onClick={() => handleOpenModal("Delete")}
-            >
-              <img className={styles.opports} src={remove} alt="remove" />
-            </button>
-            <ModalBox open={modal} kindModal={kindModal} setModal={setModal} />
-          </div>
+          <>
+            <IconButton handleOpenModal={handleOpenModal} />
+            {modal && (
+              <ModalBox
+                open={modal}
+                setModal={setModal}
+                typeOfModal={typeOfModal}
+                nodeName={name}
+                nodeId={id}
+              />
+            )}
+          </>
         )}
       </div>
 

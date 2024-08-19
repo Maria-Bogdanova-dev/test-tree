@@ -1,0 +1,10 @@
+.opports {
+  width: 20px;
+  transform: translateY(2px);
+  margin: 0 5px;
+}
+
+.boxOpports {
+  background-color: #eeeff8;
+  width: 100%;
+}
